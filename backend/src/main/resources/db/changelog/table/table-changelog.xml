@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1775156214035-account_table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE users (
+                id UUID NOT NULL PRIMARY KEY,
+                user_role TEXT NOT NULL,
+                first_name TEXT NOT NULL,
+                last_name TEXT NOT NULL,
+                username TEXT NOT NULL UNIQUE,
+                email TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                locale TEXT NOT NULL,
+                enabled BOOLEAN NOT NULL DEFAULT TRUE,
+                created_on TIMESTAMP NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="1775156214036-company_table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE company (
+                id UUID NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL UNIQUE,
+                contact_email TEXT NOT NULL,
+                contact_phone TEXT NOT NULL,
+                city TEXT NOT NULL,
+                postal_code TEXT NOT NULL,
+                country TEXT NOT NULL,
+                status TEXT NOT NULL,
+                created_on TIMESTAMP NOT NULL
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="1775156214037-location_table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE location (
+                id UUID NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL,
+                address TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                domain TEXT NOT NULL,
+                enabled BOOLEAN NOT NULL DEFAULT TRUE,
+                created_on TIMESTAMP NOT NULL,
+                company_id UUID NOT NULL REFERENCES company(id),
+                CONSTRAINT uq_location_company_name UNIQUE (company_id, name)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="1775156214038-user-company-column" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            ALTER TABLE users ADD COLUMN IF NOT EXISTS company_id UUID;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20260418-inventory-table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE inventory (
+                id UUID NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL,
+                code TEXT NOT NULL,
+                description TEXT,
+                enabled BOOLEAN NOT NULL DEFAULT TRUE,
+                created_on TIMESTAMP NOT NULL,
+                company_id UUID NOT NULL REFERENCES company(id),
+                location_id UUID REFERENCES location(id),
+                CONSTRAINT uq_inventory_company_name UNIQUE (company_id, name),
+                CONSTRAINT uq_inventory_company_code UNIQUE (company_id, code)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="20260418-item-table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE item (
+                id UUID NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL,
+                sku TEXT,
+                category TEXT,
+                brand TEXT,
+                manufacturer TEXT,
+                model TEXT,
+                part_number TEXT,
+                serial_number TEXT,
+                color TEXT,
+                dimensions TEXT,
+                weight TEXT,
+                unit TEXT,
+                quantity INTEGER NOT NULL DEFAULT 0,
+                description TEXT,
+                notes TEXT,
+                enabled BOOLEAN NOT NULL DEFAULT TRUE,
+                created_on TIMESTAMP NOT NULL,
+                inventory_id UUID NOT NULL REFERENCES inventory(id)
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

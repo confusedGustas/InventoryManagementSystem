@@ -1,0 +1,67 @@
+<article class="rounded-lg border border-slate-200 bg-white p-6">
+    <div class="flex items-center justify-between gap-4">
+        <div>
+            <div class="text-base font-semibold text-slate-900">Inventories</div>
+            <div class="mt-1 text-sm text-slate-500">Browse available inventories across your scope.</div>
+        </div>
+    </div>
+
+    <div class="mt-5 overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead>
+            <tr class="text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                <th class="px-4 py-3">Inventory</th>
+                <th class="px-4 py-3">Company</th>
+                <th class="px-4 py-3">Location</th>
+                <th class="px-4 py-3">Description</th>
+                <th class="px-4 py-3">Created</th>
+                <th class="px-4 py-3">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @for (inventory of inventories(); track inventory.id) {
+                    <tr class="text-sm text-slate-700" [class.bg-slate-50]="selectedInventoryId() === inventory.id">
+                        <td class="px-4 py-4 font-medium text-slate-900">
+                            <div>{{ inventory.name }}</div>
+                            <div class="mt-1 text-xs text-slate-400">{{ inventory.code }} • {{ inventory.enabled ? 'Enabled' : 'Disabled' }}</div>
+                        </td>
+                        <td class="px-4 py-4">{{ inventory.companyName }}</td>
+                        <td class="px-4 py-4">{{ inventory.locationName || 'Unassigned' }}</td>
+                        <td class="px-4 py-4 text-slate-500">{{ inventory.description || 'No description' }}</td>
+                        <td class="px-4 py-4 text-slate-500">{{ inventory.createdOn | date:'mediumDate' }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="flex flex-nowrap items-center gap-2 whitespace-nowrap">
+                                <button type="button" class="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="inventorySelected.emit(inventory)">
+                                    {{ selectedInventoryId() === inventory.id ? 'Deselect' : 'Open' }}
+                                </button>
+                                @if (canManageInventories()) {
+                                    <button type="button" class="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="inventoryEdited.emit(inventory)">
+                                        Edit
+                                    </button>
+                                    <button type="button"
+                                            class="shrink-0 rounded-lg border px-3 py-1.5 text-xs font-medium transition"
+                                            [class]="getToggleButtonClass(inventory.enabled)"
+                                            (click)="inventoryToggled.emit(inventory)">
+                                        {{ inventory.enabled ? 'Disable' : 'Enable' }}
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-5 flex flex-col gap-4 border-t border-slate-200 pt-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-2">
+            <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 transition hover:border-slate-300 hover:text-slate-700" (click)="pageChanged.emit(pagination().page - 1)">
+                Previous
+            </button>
+            <span class="rounded-lg bg-slate-100 px-3 py-2 font-medium text-slate-700">Page {{ pagination().page }} / {{ pagination().totalPages }}</span>
+            <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 transition hover:border-slate-300 hover:text-slate-700" (click)="pageChanged.emit(pagination().page + 1)">
+                Next
+            </button>
+        </div>
+    </div>
+</article>

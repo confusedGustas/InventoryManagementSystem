@@ -1,0 +1,23 @@
+<section class="mx-auto space-y-6">
+    <app-inventory-header class="block mb-6"
+        [canManageInventories]="canManageInventories"
+        [showInventoryForm]="showInventoryForm()"
+        [showItemForm]="showItemForm()"
+        (inventoryFormToggled)="toggleInventoryForm()"
+        (itemFormToggled)="toggleItemForm()"
+    />
+
+    <app-inventory-management
+        [showForm]="showInventoryForm()"
+        [selectedInventoryId]="selectedInventoryId()"
+        (showFormChange)="showInventoryForm.set($event)"
+        (selectedInventoryChanged)="handleSelectedInventoryChanged($event)"
+    />
+
+    <app-item-management
+        [selectedInventory]="selectedInventory()"
+        [showForm]="showItemForm()"
+        (showFormChange)="showItemForm.set($event)"
+        (selectedInventoryCleared)="handleSelectedInventoryChanged(null)"
+    />
+</section>

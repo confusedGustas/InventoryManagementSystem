@@ -1,0 +1,117 @@
+<article class="rounded-lg border border-slate-200 bg-white p-6">
+    <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+            <div class="text-base font-semibold text-slate-900">Items</div>
+            <div class="mt-1 text-sm text-slate-500">
+                @if (selectedInventory(); as inventory) {
+                    Viewing items in {{ inventory.name }}.
+                } @else {
+                    Select an inventory to view its items.
+                }
+            </div>
+        </div>
+        @if (selectedInventory()) {
+            <div class="flex flex-wrap items-center gap-2">
+                <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="inventorySelectionCleared.emit()">
+                    Clear Inventory Selection
+                </button>
+                @if (canManageItems()) {
+                    <button type="button" class="rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-700 transition hover:border-rose-300 hover:text-rose-800" (click)="itemsDeleted.emit()">
+                        Delete Selected
+                    </button>
+                }
+            </div>
+        }
+    </div>
+
+    @if (selectedInventory()) {
+        <div class="mt-5 overflow-x-auto">
+            <table class="min-w-[1700px] divide-y divide-slate-200 text-xs">
+                <thead>
+                <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+                    @if (canManageItems()) {
+                        <th class="px-3 py-3">
+                            <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-indigo-700 focus:ring-indigo-700" [checked]="areAllItemsSelected()" (change)="selectAllToggled.emit($any($event.target).checked)" />
+                        </th>
+                    }
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Item</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Category</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Company</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Inventory</th>
+                    <th class="px-4 py-3 whitespace-nowrap leading-tight">SKU</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Brand</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Manufacturer</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Model</th>
+                    <th class="px-4 py-3 whitespace-nowrap leading-tight">Part&nbsp;#</th>
+                    <th class="px-4 py-3 whitespace-nowrap leading-tight">Serial&nbsp;#</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Color</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Dimensions</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Weight</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Quantity</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Unit</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Description</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Notes</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Created</th>
+                    <th class="px-4 py-3 whitespace-normal leading-tight">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @for (item of items(); track item.id) {
+                        <tr class="text-sm text-slate-700">
+                            @if (canManageItems()) {
+                                <td class="px-3 py-3">
+                                    <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-indigo-700 focus:ring-indigo-700" [checked]="selectedItemIds().includes(item.id)" (change)="itemSelectionToggled.emit({ itemId: item.id, checked: $any($event.target).checked })" />
+                                </td>
+                            }
+                            <td class="px-4 py-4 font-medium text-slate-900"><div>{{ item.name }}</div></td>
+                            <td class="px-4 py-4">{{ item.category || 'Uncategorized' }}</td>
+                            <td class="px-4 py-4">{{ item.companyName }}</td>
+                            <td class="px-4 py-4">{{ item.inventoryName }}</td>
+                            <td class="px-4 py-4">{{ item.sku || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.brand || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.manufacturer || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.model || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.partNumber || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.serialNumber || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.color || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.dimensions || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.weight || 'N/A' }}</td>
+                            <td class="px-4 py-4">{{ item.quantity }}</td>
+                            <td class="px-4 py-4">{{ item.unit || 'N/A' }}</td>
+                            <td class="px-4 py-4 max-w-48 truncate" [title]="item.description || ''">{{ item.description || 'N/A' }}</td>
+                            <td class="px-4 py-4 max-w-48 truncate" [title]="item.notes || ''">{{ item.notes || 'N/A' }}</td>
+                            <td class="px-4 py-4 text-slate-500 whitespace-nowrap">{{ item.createdOn | date:'mediumDate' }}</td>
+                            <td class="px-4 py-4">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    @if (canManageItems()) {
+                                        <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="itemEdited.emit(item)">
+                                            Edit
+                                        </button>
+                                    } @else {
+                                        <span class="text-xs text-slate-400">View only</span>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-5 flex flex-col gap-4 border-t border-slate-200 pt-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-2">
+                <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 transition hover:border-slate-300 hover:text-slate-700" (click)="pageChanged.emit(pagination().page - 1)">
+                    Previous
+                </button>
+                <span class="rounded-lg bg-slate-100 px-3 py-2 font-medium text-slate-700">Page {{ pagination().page }} / {{ pagination().totalPages }}</span>
+                <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 transition hover:border-slate-300 hover:text-slate-700" (click)="pageChanged.emit(pagination().page + 1)">
+                    Next
+                </button>
+            </div>
+        </div>
+    } @else {
+        <div class="mt-5 rounded-lg border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
+            Select an inventory to view and manage its items.
+        </div>
+    }
+</article>

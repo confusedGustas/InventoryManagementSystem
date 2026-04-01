@@ -1,0 +1,21 @@
+@if (canManageInventories && showForm()) {
+    <app-inventory-form-card class="block mb-6"
+        [editingInventoryId]="editingInventoryId()"
+        [inventoryForm]="inventoryForm"
+        [companies]="companies()"
+        [availableLocations]="availableLocations()"
+        [isCompanyAdmin]="isCompanyAdmin"
+        (submitted)="submitInventory()"
+    />
+}
+
+<app-inventory-list-card class="block mb-6"
+    [inventories]="inventories()"
+    [selectedInventoryId]="selectedInventoryId()"
+    [pagination]="pagination()"
+    [canManageInventories]="canManageInventories"
+    (inventorySelected)="selectInventory($event)"
+    (inventoryEdited)="editInventory($event)"
+    (inventoryToggled)="toggleInventoryEnabled($event)"
+    (pageChanged)="goToPage($event)"
+/>

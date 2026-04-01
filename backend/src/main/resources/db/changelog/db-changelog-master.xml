@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="/db/changelog/table/table-changelog.xml"/>
+    <include file="/db/changelog/data/data-changelog.xml"/>
+
+    <changeSet id="1775156214036-insert-admin-user" author="Gustas Antanas Gaigalas 20222754">
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="user_role" value="PLATFORM_ADMIN"/>
+            <column name="first_name" value="Gustas Antanas"/>
+            <column name="last_name" value="Gaigalas"/>
+            <column name="username" value="admin"/>
+            <column name="email" value="admin@example.com"/>
+            <column name="password" value="$2a$12$EUsyBStMZCdei66UBnKtX.KtjZGO3eSFaLh2FUE/hd7DtYiHPbKzO"/>
+            <column name="locale" value="en"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="created_on" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

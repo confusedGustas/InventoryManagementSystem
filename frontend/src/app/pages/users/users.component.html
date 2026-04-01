@@ -1,0 +1,143 @@
+<section class="mx-auto space-y-6">
+    <div class="rounded-lg border border-slate-200 bg-white p-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+                <h1 class="mt-3 text-3xl font-semibold text-slate-900">Users</h1>
+                <p class="mt-2 text-sm text-slate-500">Create, update, and manage user accounts.</p>
+            </div>
+            <button type="button" class="rounded-lg bg-indigo-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600" (click)="toggleCreateForm()">
+                {{ showCreateForm() ? 'Close Form' : 'New User' }}
+            </button>
+        </div>
+    </div>
+
+    @if (showCreateForm()) {
+        <article class="rounded-lg border border-slate-200 bg-white p-6">
+            <div class="text-base font-semibold text-slate-900">{{ editingUserId() ? 'Edit User' : 'Create User' }}</div>
+            <form class="mt-5 grid gap-4 md:grid-cols-2" [formGroup]="userForm" (ngSubmit)="submit()">
+                <label class="block">
+                    <span class="mb-1.5 block text-sm text-slate-700">First Name</span>
+                    <input formControlName="firstName" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-sm text-slate-700">Last Name</span>
+                    <input formControlName="lastName" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-sm text-slate-700">Username</span>
+                    <input formControlName="username" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-sm text-slate-700">Email</span>
+                    <input formControlName="email" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+                </label>
+
+                @if (!isEditing()) {
+                    <label class="block">
+                        <span class="mb-1.5 block text-sm text-slate-700">Password</span>
+                        <input type="password" formControlName="password" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+                    </label>
+                }
+
+                <label class="block">
+                    <span class="mb-1.5 block text-sm text-slate-700">Role</span>
+                    <div class="relative">
+                        <select formControlName="userRole" class="w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100">
+                            @for (role of roleOptions; track role) {
+                                <option [value]="role">{{ formatEnumLabel(role) }}</option>
+                            }
+                        </select>
+                        <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.512a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" /></svg>
+                        </span>
+                    </div>
+                </label>
+
+                @if (!isCompanyAdmin) {
+                    <label class="block md:col-span-2">
+                        <span class="mb-1.5 block text-sm text-slate-700">Company</span>
+                        <div class="relative">
+                            <select formControlName="companyId" class="w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100">
+                                <option value="">No company assigned</option>
+                                @for (company of companies(); track company.id) {
+                                    <option [value]="company.id">{{ company.name }}</option>
+                                }
+                            </select>
+                            <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.512a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" /></svg>
+                            </span>
+                        </div>
+                    </label>
+                }
+
+                <div class="md:col-span-2">
+                    <button type="submit" class="rounded-lg bg-indigo-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600">
+                        {{ editingUserId() ? 'Update User' : 'Save User' }}
+                    </button>
+                </div>
+            </form>
+        </article>
+    }
+
+    <article class="rounded-lg border border-slate-200 bg-white p-6">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead>
+                <tr class="text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Username</th>
+                    <th class="px-4 py-3">Email</th>
+                    <th class="px-4 py-3">Role</th>
+                    <th class="px-4 py-3">Company</th>
+                    <th class="px-4 py-3">Created</th>
+                    <th class="px-4 py-3">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @for (user of users(); track user.id) {
+                        <tr class="text-sm text-slate-700">
+                            <td class="px-4 py-4 font-medium text-slate-900">
+                                <div>{{ user.firstName }} {{ user.lastName }}</div>
+                                <div class="mt-1 text-xs text-slate-400">{{ user.enabled ? 'Enabled' : 'Disabled' }}</div>
+                            </td>
+                            <td class="px-4 py-4">{{ user.username }}</td>
+                            <td class="px-4 py-4">{{ user.email }}</td>
+                            <td class="px-4 py-4">
+                                <span class="rounded-lg bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">{{ formatEnumLabel(user.userRole) }}</span>
+                            </td>
+                            <td class="px-4 py-4">{{ user.companyName || 'Unassigned' }}</td>
+                            <td class="px-4 py-4 text-slate-500">{{ user.createdOn | date:'mediumDate' }}</td>
+                            <td class="px-4 py-4">
+                                <div class="flex items-center gap-2">
+                                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="editUser(user)">
+                                        Edit
+                                    </button>
+                                    <button type="button" class="rounded-lg border px-3 py-1.5 text-xs font-medium transition"
+                                            [class]="getToggleButtonClass(user.enabled)"
+                                            (click)="toggleUserEnabled(user)">
+                                        {{ user.enabled ? 'Disable' : 'Enable' }}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-5 flex flex-col gap-4 border-t border-slate-200 pt-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-2">
+                <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 transition hover:border-slate-300 hover:text-slate-700" (click)="goToPage(pagination().page - 1)">
+                    Previous
+                </button>
+                <span class="rounded-lg bg-slate-100 px-3 py-2 font-medium text-slate-700">Page {{ pagination().page }} / {{ pagination().totalPages }}</span>
+                <button type="button" class="rounded-lg border border-slate-200 px-3 py-2 transition hover:border-slate-300 hover:text-slate-700" (click)="goToPage(pagination().page + 1)">
+                    Next
+                </button>
+            </div>
+        </div>
+    </article>
+</section>

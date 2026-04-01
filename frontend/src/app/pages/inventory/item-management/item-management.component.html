@@ -1,0 +1,22 @@
+@if (showForm()) {
+    <app-item-form-card class="block mb-6"
+        [editingItemId]="editingItemId()"
+        [itemForm]="itemForm"
+        [selectedInventory]="selectedInventory()"
+        (submitted)="submitItem()"
+    />
+}
+
+<app-item-table-card class="block"
+    [selectedInventory]="selectedInventory()"
+    [items]="items()"
+    [selectedItemIds]="selectedItemIds()"
+    [pagination]="pagination()"
+    [canManageItems]="canManageItems"
+    (inventorySelectionCleared)="selectedInventoryCleared.emit()"
+    (itemsDeleted)="deleteSelectedItems()"
+    (selectAllToggled)="toggleSelectAllItems($event)"
+    (itemSelectionToggled)="toggleItemSelection($event.itemId, $event.checked)"
+    (itemEdited)="editItem($event)"
+    (pageChanged)="goToPage($event)"
+/>

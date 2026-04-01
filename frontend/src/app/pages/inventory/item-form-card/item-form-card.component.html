@@ -1,0 +1,60 @@
+<article class="rounded-lg border border-slate-200 bg-white p-6">
+    <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+            <div class="text-base font-semibold text-slate-900">{{ editingItemId() ? 'Edit Item' : 'Create Item' }}</div>
+            <div class="mt-1 text-sm text-slate-500">
+                @if (selectedInventory(); as inventory) {
+                    {{ inventory.name }} {{ inventory.locationName ? '• ' + inventory.locationName : '' }}
+                } @else {
+                    Select an inventory to start adding items.
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (selectedInventory()) {
+        <form class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3" [formGroup]="itemForm()" (ngSubmit)="submitted.emit()">
+            <label class="block">
+                <span class="mb-1.5 block text-sm text-slate-700">Item Name</span>
+                <input formControlName="name" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+            </label>
+
+            <label class="block">
+                <span class="mb-1.5 block text-sm text-slate-700">Quantity</span>
+                <input type="number" min="0" formControlName="quantity" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+            </label>
+
+            <label class="block">
+                <span class="mb-1.5 block text-sm text-slate-700">Unit</span>
+                <input formControlName="unit" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" />
+            </label>
+
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">SKU</span><input formControlName="sku" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Category</span><input formControlName="category" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Brand</span><input formControlName="brand" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Manufacturer</span><input formControlName="manufacturer" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Model</span><input formControlName="model" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Part Number</span><input formControlName="partNumber" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Serial Number</span><input formControlName="serialNumber" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Color</span><input formControlName="color" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Dimensions</span><input formControlName="dimensions" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+            <label class="block"><span class="mb-1.5 block text-sm text-slate-700">Weight</span><input formControlName="weight" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100" /></label>
+
+            <label class="block md:col-span-2 xl:col-span-3">
+                <span class="mb-1.5 block text-sm text-slate-700">Description</span>
+                <textarea formControlName="description" rows="3" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100"></textarea>
+            </label>
+
+            <label class="block md:col-span-2 xl:col-span-3">
+                <span class="mb-1.5 block text-sm text-slate-700">Notes</span>
+                <textarea formControlName="notes" rows="3" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-700 focus:ring-2 focus:ring-slate-100"></textarea>
+            </label>
+
+            <div class="md:col-span-2 xl:col-span-3">
+                <button type="submit" class="rounded-lg bg-indigo-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-600">
+                    {{ editingItemId() ? 'Update Item' : 'Save Item' }}
+                </button>
+            </div>
+        </form>
+    }
+</article>
