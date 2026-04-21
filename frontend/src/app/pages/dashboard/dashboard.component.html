@@ -1,1 +1,27 @@
-<p>dashboard works!</p>
+<section class="mx-auto px-4 py-6 sm:px-6">
+    <div class="rounded-lg border border-slate-200 bg-white p-4 sm:p-6 mb-6">
+        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+                <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">{{ pageTitle() }}</h1>
+                <p class="mt-1 text-sm text-slate-500">Track inventory health across companies, locations, and item categories.</p>
+            </div>
+            @if (dashboard(); as currentDashboard) {
+                <app-dashboard-company-filter
+                    class="block"
+                    [isPlatformAdmin]="isPlatformAdmin"
+                    [companies]="currentDashboard.companies"
+                    [selectedCompanyId]="selectedCompanyId()"
+                    (companySelected)="selectCompany($event)"
+                />
+            }
+        </div>
+    </div>
+    @if (dashboard(); as currentDashboard) {
+        <app-dashboard-summary-cards class="block mb-6" [summary]="currentDashboard.summary"/>
+        <app-dashboard-company-breakdown class="block mb-6" [companies]="currentDashboard.companyBreakdown"/>
+        <app-dashboard-category-breakdown class="block mb-6" [categories]="currentDashboard.categoryBreakdown"/>
+        <app-dashboard-location-breakdown class="block mb-6" [locations]="currentDashboard.locationBreakdown"/>
+        <app-dashboard-inventory-breakdown class="block mb-6" [inventories]="currentDashboard.inventoryBreakdown"/>
+        <app-dashboard-recent-items class="block mb-6" [items]="currentDashboard.recentItems"/>
+    }
+</section>

@@ -1,0 +1,31 @@
+<article class="rounded-lg border border-slate-200 bg-white p-6">
+    <div class="text-base font-semibold text-slate-900">Inventory Breakdown</div>
+    <div class="mt-1 text-sm text-slate-500">Inventory-level visibility into item counts and stock quantity.</div>
+
+    <div class="mt-5 overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead>
+            <tr class="text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <th class="px-4 py-3">Inventory</th>
+                <th class="px-4 py-3">Company</th>
+                <th class="px-4 py-3">Location</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Items</th>
+                <th class="px-4 py-3">Quantity</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+                @for (inventory of inventories(); track inventory.inventoryId) {
+                    <tr>
+                        <td class="px-4 py-4 font-medium text-slate-900">{{ inventory.inventoryName }}</td>
+                        <td class="px-4 py-4">{{ inventory.companyName }}</td>
+                        <td class="px-4 py-4">{{ inventory.locationName }}</td>
+                        <td class="px-4 py-4">{{ inventory.enabled ? 'Enabled' : 'Disabled' }}</td>
+                        <td class="px-4 py-4">{{ inventory.itemCount }}</td>
+                        <td class="px-4 py-4">{{ inventory.totalQuantity }}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</article>

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
@@ -15,6 +16,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
     boolean existsByCompanyIdAndCodeIgnoreCaseAndIdNot(UUID companyId, String code, UUID id);
     Inventory findInventoryById(UUID id);
     Inventory findInventoryByIdAndCompanyId(UUID id, UUID companyId);
+    List<Inventory> findAllByCompanyId(UUID companyId);
     Page<Inventory> findAllByCompanyId(UUID companyId, Pageable pageable);
 
 }

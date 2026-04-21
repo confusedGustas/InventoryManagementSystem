@@ -5,12 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ItemRepository extends JpaRepository<Item, UUID> {
 
     Item findItemById(UUID id);
     Item findItemByIdAndInventoryCompanyId(UUID id, UUID companyId);
+    List<Item> findAllByInventoryCompanyId(UUID companyId);
     Page<Item> findAllByInventoryId(UUID inventoryId, Pageable pageable);
 
 }

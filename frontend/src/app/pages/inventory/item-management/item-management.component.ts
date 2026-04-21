@@ -29,6 +29,7 @@ export class ItemManagementComponent {
     protected readonly selectedItemIds = signal<string[]>([]);
     protected readonly editingItemId = signal<string | null>(null);
     protected readonly pagination = signal({ page: 1, totalPages: 1 });
+    private readonly activeInventoryId = signal<string | null>(null);
 
     protected readonly isPlatformAdmin = AuthUtils.hasRole(UserRole.PLATFORM_ADMIN);
     protected readonly isCompanyAdmin = AuthUtils.hasRole(UserRole.COMPANY_ADMIN);
@@ -55,6 +56,11 @@ export class ItemManagementComponent {
     constructor() {
         effect(() => {
             const inventoryId = this.selectedInventory()?.id ?? null;
+            if (inventoryId === this.activeInventoryId()) {
+                return;
+            }
+
+            this.activeInventoryId.set(inventoryId);
 
             this.selectedItemIds.set([]);
             this.pagination.set({ page: 1, totalPages: 1 });
@@ -119,8 +125,7 @@ export class ItemManagementComponent {
         }
 
         this.editingItemId.set(item.id);
-        this.showFormChange.emit(true);
-        this.itemForm.setValue({
+        this.itemForm.patchValue({
             name: item.name,
             sku: item.sku ?? '',
             category: item.category ?? '',
@@ -137,6 +142,7 @@ export class ItemManagementComponent {
             description: item.description ?? '',
             notes: item.notes ?? '',
         });
+        this.showFormChange.emit(true);
     }
 
     protected toggleItemSelection(itemId: string, checked: boolean): void {
