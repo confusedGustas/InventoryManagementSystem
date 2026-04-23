@@ -1,0 +1,29 @@
+<section class="rounded-lg border border-slate-200 bg-white p-4 sm:p-6">
+    <div class="flex flex-col gap-1">
+        <h2 class="text-lg font-semibold text-slate-900">Category Insights</h2>
+        <p class="text-sm text-slate-500">See which categories carry the most volume and average quantity.</p>
+    </div>
+
+    <div class="mt-5 overflow-x-auto">
+        <table class="min-w-full text-left text-sm text-slate-600">
+            <thead class="border-b border-slate-200 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <tr>
+                    <th class="px-4 py-3 whitespace-nowrap">Category</th>
+                    <th class="px-4 py-3 whitespace-nowrap">Items</th>
+                    <th class="px-4 py-3 whitespace-nowrap">Quantity</th>
+                    <th class="px-4 py-3 whitespace-nowrap">Avg / Item</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (category of categories(); track category.category) {
+                    <tr class="border-b border-slate-100 last:border-0">
+                        <td class="px-4 py-3 font-medium text-slate-900">{{ category.category }}</td>
+                        <td class="px-4 py-3">{{ category.itemCount }}</td>
+                        <td class="px-4 py-3">{{ category.totalQuantity }}</td>
+                        <td class="px-4 py-3">{{ category.averageQuantity | number:'1.0-1' }}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -3,6 +3,7 @@ package org.gustas.inventory.inventorymanagementsystem.domain.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.gustas.inventory.inventorymanagementsystem.common.dto.CompanyOptionDto;
 import org.gustas.inventory.inventorymanagementsystem.common.service.CurrentUserContext;
+import org.gustas.inventory.inventorymanagementsystem.common.service.InventoryAggregationHelper;
 import org.gustas.inventory.inventorymanagementsystem.domain.auth.utils.AuthUtils;
 import org.gustas.inventory.inventorymanagementsystem.domain.company.entity.Company;
 import org.gustas.inventory.inventorymanagementsystem.domain.company.entity.CompanyStatus;
@@ -49,6 +50,7 @@ public class DashboardService {
     private final ItemRepository itemRepository;
     private final CompanyMapper companyMapper;
     private final DashboardMapper dashboardMapper;
+    private final InventoryAggregationHelper inventoryAggregationHelper;
 
     @Transactional(readOnly = true)
     public DashboardDto getDashboard(UUID companyId, String username) {
@@ -67,9 +69,7 @@ public class DashboardService {
                 .collect(Collectors.groupingBy(inventory -> inventory.getCompany().getId()));
         Map<UUID, List<Item>> itemsByCompanyId = scopedItems.stream()
                 .collect(Collectors.groupingBy(item -> item.getInventory().getCompany().getId()));
-        Map<UUID, List<Inventory>> inventoriesByLocationId = scopedInventories.stream()
-                .filter(inventory -> inventory.getLocation() != null)
-                .collect(Collectors.groupingBy(inventory -> inventory.getLocation().getId()));
+        Map<UUID, List<Inventory>> inventoriesByLocationId = inventoryAggregationHelper.groupInventoriesByLocationId(scopedInventories);
         Map<UUID, List<Item>> itemsByInventoryId = scopedItems.stream()
                 .collect(Collectors.groupingBy(item -> item.getInventory().getId()));
         Map<String, List<Item>> itemsByCategory = scopedItems.stream()

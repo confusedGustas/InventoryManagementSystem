@@ -74,7 +74,7 @@ export const routes: Routes = [
             {
                 path: 'analytics',
                 component: AnalyticComponent,
-                data: { label: 'Analytics', icon: 'analytics' }
+                data: { label: 'Analytics', icon: 'analytics', roles: [UserRole.PLATFORM_ADMIN, UserRole.COMPANY_ADMIN, UserRole.COMPANY_USER, UserRole.COMPANY_FINANCE] }
             },
             {
                 path: 'ai',

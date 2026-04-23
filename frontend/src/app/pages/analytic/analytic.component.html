@@ -1,1 +1,29 @@
-<p>analytic works!</p>
+<section class="mx-auto px-4 py-6 sm:px-6">
+    <div class="rounded-lg border border-slate-200 bg-white p-4 sm:p-6 mb-6">
+        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+                <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">{{ pageTitle() }}</h1>
+                <p class="mt-1 text-sm text-slate-500">Explore stock health, data quality, and location utilization across your inventories.</p>
+            </div>
+            @if (analytics(); as currentAnalytics) {
+                <app-analytic-company-filter
+                    class="block"
+                    [isPlatformAdmin]="isPlatformAdmin"
+                    [companies]="currentAnalytics.companies"
+                    [selectedCompanyId]="selectedCompanyId()"
+                    (companySelected)="selectCompany($event)"
+                />
+            }
+        </div>
+    </div>
+
+    @if (analytics(); as currentAnalytics) {
+        <app-analytic-summary-cards class="block mb-6" [summary]="currentAnalytics.summary"/>
+        <app-analytic-stock-health class="block mb-6" [stockHealth]="currentAnalytics.stockHealth"/>
+        <app-analytic-data-quality class="block mb-6" [metrics]="currentAnalytics.dataQuality"/>
+        <app-analytic-category-insights class="block mb-6" [categories]="currentAnalytics.categoryInsights"/>
+        <app-analytic-brand-insights class="block mb-6" [brands]="currentAnalytics.brandInsights"/>
+        <app-analytic-location-insights class="block mb-6" [locations]="currentAnalytics.locationInsights"/>
+        <app-analytic-recent-activity class="block mb-6" [activity]="currentAnalytics.recentActivity"/>
+    }
+</section>
