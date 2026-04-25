@@ -79,7 +79,7 @@ export const routes: Routes = [
             {
                 path: 'ai',
                 component: AiComponent,
-                data: { label: 'AI', icon: 'robot', roles: [UserRole.COMPANY_USER] }
+                data: { label: 'AI', icon: 'robot', roles: [UserRole.PLATFORM_ADMIN, UserRole.COMPANY_ADMIN, UserRole.COMPANY_USER, UserRole.COMPANY_FINANCE] }
             },
         ]
     },

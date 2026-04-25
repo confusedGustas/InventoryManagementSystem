@@ -12,3 +12,7 @@ spring:
   security:
     jwt:
       secret: ${JWT_SECRET}
+app:
+  openai:
+    responses-url: https://api.openai.com/v1/responses
+    model: gpt-5-mini

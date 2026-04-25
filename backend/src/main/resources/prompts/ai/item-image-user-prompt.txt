@@ -1,0 +1,9 @@
+Analyze this image and describe the inventory item shown.
+
+Instructions:
+- identify the item as accurately as possible
+- use conservative guesses only
+- set quantity to 1 unless the image clearly shows multiple identical units
+- leave uncertain fields as empty strings
+- keep description concise and factual
+- put extra useful observations into notes

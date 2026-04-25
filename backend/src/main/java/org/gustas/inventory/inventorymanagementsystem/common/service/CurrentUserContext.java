@@ -50,6 +50,22 @@ public class CurrentUserContext {
         return List.of(mapper.apply(company));
     }
 
+    public List<Company> resolveScopedCompanies(User currentUser, Company selectedCompany) {
+        if (selectedCompany != null) {
+            return List.of(selectedCompany);
+        }
+
+        if (authUtils.isPlatformAdmin(currentUser)) {
+            return companyRepository.findAll().stream()
+                    .sorted(Comparator.comparing(Company::getName, String.CASE_INSENSITIVE_ORDER))
+                    .toList();
+        }
+
+        Company company = currentUser.getCompany();
+        companyIntegrity.checkCompanyNotNull(company);
+        return List.of(company);
+    }
+
     public <T> T findManagedEntity(User currentUser, UUID entityId, Function<UUID, T> globalFinder, BiFunction<UUID, UUID, T> companyScopedFinder) {
         if (authUtils.isPlatformAdmin(currentUser)) {
             return globalFinder.apply(entityId);

@@ -103,4 +103,29 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20260423-api-key-table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE api_key (
+                id UUID NOT NULL PRIMARY KEY,
+                api_key TEXT NOT NULL,
+                updated_on TIMESTAMP NOT NULL,
+                company_id UUID NOT NULL UNIQUE REFERENCES company(id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="20260423-ai-report-table" author="Gustas Antanas Gaigalas 20222754">
+        <sql>
+            CREATE TABLE ai_report (
+                id UUID NOT NULL PRIMARY KEY,
+                scope_label TEXT NOT NULL,
+                overview TEXT NOT NULL,
+                report_json TEXT NOT NULL,
+                generated_on TIMESTAMP NOT NULL,
+                company_id UUID REFERENCES company(id),
+                generated_by_user_id UUID REFERENCES users(id)
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

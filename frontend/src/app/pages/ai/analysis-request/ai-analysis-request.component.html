@@ -1,0 +1,18 @@
+<section class="rounded-lg border border-slate-200 bg-white p-4 sm:p-6">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+            <h2 class="text-lg font-semibold text-slate-900">Strategic Analysis</h2>
+            <p class="mt-1 text-sm text-slate-500">
+                Run a compact AI review for {{ scopeLabel() }} to spot depletion risks, oversupply, and likely next purchases.
+            </p>
+        </div>
+        <button
+            type="button"
+            class="rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:bg-slate-400"
+            [disabled]="loading()"
+            (click)="analyzeRequested.emit()"
+        >
+            {{ loading() ? 'Analyzing...' : 'Run Analysis' }}
+        </button>
+    </div>
+</section>

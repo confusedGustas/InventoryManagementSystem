@@ -8,7 +8,6 @@ import org.gustas.inventory.inventorymanagementsystem.domain.auth.utils.AuthUtil
 import org.gustas.inventory.inventorymanagementsystem.domain.company.entity.Company;
 import org.gustas.inventory.inventorymanagementsystem.domain.company.entity.CompanyStatus;
 import org.gustas.inventory.inventorymanagementsystem.domain.company.mapper.CompanyMapper;
-import org.gustas.inventory.inventorymanagementsystem.domain.company.repository.CompanyRepository;
 import org.gustas.inventory.inventorymanagementsystem.domain.dashboard.dto.DashboardCategoryStatDto;
 import org.gustas.inventory.inventorymanagementsystem.domain.dashboard.dto.DashboardCompanyStatDto;
 import org.gustas.inventory.inventorymanagementsystem.domain.dashboard.dto.DashboardDto;
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +42,6 @@ public class DashboardService {
 
     private final CurrentUserContext currentUserContext;
     private final AuthUtils authUtils;
-    private final CompanyRepository companyRepository;
     private final LocationRepository locationRepository;
     private final InventoryRepository inventoryRepository;
     private final ItemRepository itemRepository;
@@ -58,7 +55,7 @@ public class DashboardService {
         List<CompanyOptionDto> companies = currentUserContext.resolveManageableCompanies(currentUser, companyMapper::toCompanyOptionDto);
         Company selectedCompany = resolveSelectedCompany(currentUser, companyId);
 
-        List<Company> scopedCompanies = resolveScopedCompanies(selectedCompany, currentUser);
+        List<Company> scopedCompanies = currentUserContext.resolveScopedCompanies(currentUser, selectedCompany);
         List<Location> scopedLocations = resolveScopedLocations(selectedCompany, currentUser);
         List<Inventory> scopedInventories = resolveScopedInventories(selectedCompany, currentUser);
         List<Item> scopedItems = resolveScopedItems(selectedCompany, currentUser);
@@ -162,20 +159,6 @@ public class DashboardService {
         }
 
         return currentUserContext.resolveCompany(companyId, currentUser);
-    }
-
-    private List<Company> resolveScopedCompanies(Company selectedCompany, User currentUser) {
-        if (selectedCompany != null) {
-            return List.of(selectedCompany);
-        }
-
-        if (authUtils.isPlatformAdmin(currentUser)) {
-            return companyRepository.findAll().stream()
-                    .sorted(Comparator.comparing(Company::getName, String.CASE_INSENSITIVE_ORDER))
-                    .toList();
-        }
-
-        return List.of(currentUser.getCompany());
     }
 
     private List<Location> resolveScopedLocations(Company selectedCompany, User currentUser) {

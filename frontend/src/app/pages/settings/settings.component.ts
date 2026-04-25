@@ -1,12 +1,14 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {Router} from '@angular/router';
-import {UserDto, SettingsService} from './settings.service';
+import {ApiKeyDto, UserDto, SettingsService} from './settings.service';
 import {UserBannerComponent} from './user-banner/user-banner.component';
 import {ProfileDetailsComponent} from './profile-details/profile-details.component';
 import {ChangeEmailComponent} from './change-email/change-email.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {ToastService} from '../../shared/toast/toast.service';
 import {AuthService} from '../../auth/auth.service';
+import {ApiKeyComponent} from './api-key/api-key.component';
+import {UserRole} from '../../shared/enums';
 
 @Component({
     selector: 'app-user',
@@ -15,7 +17,8 @@ import {AuthService} from '../../auth/auth.service';
         UserBannerComponent,
         ProfileDetailsComponent,
         ChangeEmailComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        ApiKeyComponent
     ],
     templateUrl: './settings.component.html'
 })
@@ -27,13 +30,29 @@ export class SettingsComponent {
     private readonly router = inject(Router);
 
     protected readonly profile = signal<UserDto | null>(null);
+    protected readonly companyApiKey = signal<ApiKeyDto | null>(null);
+    protected readonly showApiKey = signal(false);
 
     constructor() {
         this.loadProfile();
+
+        effect(() => {
+            const profile = this.profile();
+            const shouldShowApiKey = profile?.userRole === UserRole.COMPANY_ADMIN;
+            this.showApiKey.set(shouldShowApiKey);
+
+            if (shouldShowApiKey && !this.companyApiKey()) {
+                this.loadCompanyApiKey();
+            }
+        });
     }
 
     protected updateProfile(profile: UserDto): void {
         this.profile.set(profile);
+    }
+
+    protected updateCompanyApiKey(companyApiKey: ApiKeyDto): void {
+        this.companyApiKey.set(companyApiKey);
     }
 
     protected async logout(): Promise<void> {
@@ -53,6 +72,17 @@ export class SettingsComponent {
             },
             error: () => {
                 this.toast.error('Failed to load user profile. Please try again.');
+            }
+        });
+    }
+
+    private loadCompanyApiKey(): void {
+        this.userService.getCompanyApiKey().subscribe({
+            next: (companyApiKey) => {
+                this.companyApiKey.set(companyApiKey);
+            },
+            error: () => {
+                this.toast.error('Failed to load company API key. Please try again.');
             }
         });
     }

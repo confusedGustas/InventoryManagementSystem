@@ -1,0 +1,30 @@
+Analyze this inventory dataset and produce concise strategic recommendations.
+Focus on:
+- what items may need replenishment soon
+- what items appear oversaturated
+- what items or categories should likely be purchased next
+- 3 short, practical actions
+
+Keep the answer grounded in the provided data only.
+
+Scope summary:
+- Companies: %d
+- Locations: %d
+- Inventories: %d
+- Items: %d
+- Total quantity: %d
+
+Low stock items:
+%s
+
+Out of stock items:
+%s
+
+Highest stock items:
+%s
+
+Category distribution:
+%s
+
+Empty inventories:
+%s

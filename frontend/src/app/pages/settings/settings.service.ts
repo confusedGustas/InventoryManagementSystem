@@ -26,6 +26,18 @@ export interface ChangePasswordDto {
     newPassword: string;
 }
 
+export interface ApiKeyDto {
+    id: string | null;
+    companyId: string;
+    companyName: string;
+    apiKey: string;
+    updatedOn: string | null;
+}
+
+export interface SaveApiKeyDto {
+    apiKey: string;
+}
+
 export interface CreateUserDto {
     firstName: string;
     lastName: string;
@@ -55,6 +67,10 @@ export class SettingsService {
         return this.http.get<UserDto>(`${this.apiUrl}/users/profile`);
     }
 
+    getCompanyApiKey() {
+        return this.http.get<ApiKeyDto>(`${this.apiUrl}/api-keys/company`);
+    }
+
     getUsers(page = 1) {
         const params = new HttpParams().set('page', page);
         return this.http.get<PagedResponseWithCompanies<UserDto>>(`${this.apiUrl}/users`, { params });
@@ -66,6 +82,10 @@ export class SettingsService {
 
     changePassword(payload: ChangePasswordDto) {
         return this.http.patch<UserDto>(`${this.apiUrl}/users/change-password`, payload);
+    }
+
+    saveCompanyApiKey(payload: SaveApiKeyDto) {
+        return this.http.put<ApiKeyDto>(`${this.apiUrl}/api-keys/company`, payload);
     }
 
     createUser(payload: CreateUserDto) {

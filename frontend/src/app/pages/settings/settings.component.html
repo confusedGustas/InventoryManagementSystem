@@ -2,6 +2,16 @@
     <section class="space-y-6">
         <app-user-banner [firstName]="user.firstName" [lastName]="user.lastName" [createdOn]="user.createdOn"/>
         <app-profile-details [profile]="user"/>
+        @if (showApiKey()) {
+            @if (companyApiKey(); as companyApiKey) {
+                <app-api-key
+                    [apiKey]="companyApiKey.apiKey"
+                    [companyName]="companyApiKey.companyName"
+                    [updatedOn]="companyApiKey.updatedOn"
+                    (apiKeySaved)="updateCompanyApiKey($event)"
+                />
+            }
+        }
         <div class="grid grid-cols-2 gap-6">
             <app-change-email class="flex" [email]="user.email" (profileUpdated)="updateProfile($event)"/>
             <app-change-password class="flex" />

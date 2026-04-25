@@ -11,4 +11,8 @@ public class AuthUtils {
         return user != null && user.getUserRole() == UserRole.PLATFORM_ADMIN;
     }
 
+    public boolean isCompanyAdmin(User user) {
+        return user != null && user.getUserRole() == UserRole.COMPANY_ADMIN;
+    }
+
 }
