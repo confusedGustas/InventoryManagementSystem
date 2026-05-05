@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Backend Domain API Smoke" enabled="true">
+      <stringProp name="TestPlan.comments">CRUD smoke flow for secured backend endpoints.</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="protocol" elementType="Argument"><stringProp name="Argument.name">protocol</stringProp><stringProp name="Argument.value">${__P(protocol,http)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="host" elementType="Argument"><stringProp name="Argument.name">host</stringProp><stringProp name="Argument.value">${__P(host,localhost)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="port" elementType="Argument"><stringProp name="Argument.name">port</stringProp><stringProp name="Argument.value">${__P(port,8080)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="base_path" elementType="Argument"><stringProp name="Argument.name">base_path</stringProp><stringProp name="Argument.value">${__P(base_path,)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="platform_admin_username" elementType="Argument"><stringProp name="Argument.name">platform_admin_username</stringProp><stringProp name="Argument.value">${__P(platform_admin_username,admin)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="platform_admin_password" elementType="Argument"><stringProp name="Argument.name">platform_admin_password</stringProp><stringProp name="Argument.value">${__P(platform_admin_password,admin)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="company_admin_username" elementType="Argument"><stringProp name="Argument.name">company_admin_username</stringProp><stringProp name="Argument.value">${__P(company_admin_username,apple.admin)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="company_admin_password" elementType="Argument"><stringProp name="Argument.name">company_admin_password</stringProp><stringProp name="Argument.value">${__P(company_admin_password,admin)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="company_api_key" elementType="Argument"><stringProp name="Argument.name">company_api_key</stringProp><stringProp name="Argument.value">${__P(company_api_key,sk-test-change-me)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="company_api_key_updated" elementType="Argument"><stringProp name="Argument.name">company_api_key_updated</stringProp><stringProp name="Argument.value">${__P(company_api_key_updated,sk-test-updated)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="page" elementType="Argument"><stringProp name="Argument.name">page</stringProp><stringProp name="Argument.value">${__P(page,1)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+          <elementProp name="run_id" elementType="Argument"><stringProp name="Argument.name">run_id</stringProp><stringProp name="Argument.value">${__time(yyyyMMddHHmmss,)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Platform Admin CRUD Flow" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth JSON Headers" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="Authorization" elementType="Header">
+              <stringProp name="Header.name">Authorization</stringProp>
+              <stringProp name="Header.value">Bearer ${platform_jwt}</stringProp>
+            </elementProp>
+            <elementProp name="Content-Type" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="Accept" elementType="Header">
+              <stringProp name="Header.name">Accept</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /auth/login platform admin" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;username&quot;:&quot;${platform_admin_username}&quot;,&quot;password&quot;:&quot;${platform_admin_password}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/auth/login</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Platform JWT" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">platform_jwt</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.token</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_PLATFORM_TOKEN</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Platform Login Succeeded" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get('platform_jwt') != null &amp;&amp; vars.get('platform_jwt') != 'MISSING_PLATFORM_TOKEN',)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Company Endpoints" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /companies" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="page" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">page</stringProp>
+                  <stringProp name="Argument.value">${page}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/companies</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /companies" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Company ${run_id}&quot;,&quot;contactEmail&quot;:&quot;perf-company-${run_id}@example.test&quot;,&quot;contactPhone&quot;:&quot;+37060000001&quot;,&quot;city&quot;:&quot;Vilnius&quot;,&quot;postalCode&quot;:&quot;LT-01100&quot;,&quot;country&quot;:&quot;Lithuania&quot;,&quot;status&quot;:&quot;ACTIVE&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/companies</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Company Id" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">created_company_id</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_COMPANY_ID</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /companies/{companyId}" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Company Updated ${run_id}&quot;,&quot;contactEmail&quot;:&quot;perf-company-updated-${run_id}@example.test&quot;,&quot;contactPhone&quot;:&quot;+37060000002&quot;,&quot;city&quot;:&quot;Kaunas&quot;,&quot;postalCode&quot;:&quot;LT-44280&quot;,&quot;country&quot;:&quot;Lithuania&quot;,&quot;status&quot;:&quot;ACTIVE&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/companies/${created_company_id}</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /companies/{companyId}/disable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/companies/${created_company_id}/disable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /companies/{companyId}/enable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/companies/${created_company_id}/enable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Company Created" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get('created_company_id') != null &amp;&amp; vars.get('created_company_id') != 'MISSING_COMPANY_ID',)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Location Endpoints" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /locations" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="page" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">page</stringProp><stringProp name="Argument.value">${page}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/locations</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /locations" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Location ${run_id}&quot;,&quot;address&quot;:&quot;Perf Street 1&quot;,&quot;phone&quot;:&quot;+37061111111&quot;,&quot;domain&quot;:&quot;perf-location-${run_id}.example.test&quot;,&quot;companyId&quot;:&quot;${created_company_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/locations</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Location Id" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">created_location_id</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_LOCATION_ID</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /locations/{locationId}" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Location Updated ${run_id}&quot;,&quot;address&quot;:&quot;Perf Street 2&quot;,&quot;phone&quot;:&quot;+37062222222&quot;,&quot;domain&quot;:&quot;perf-location-updated-${run_id}.example.test&quot;,&quot;companyId&quot;:&quot;${created_company_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/locations/${created_location_id}</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /locations/{locationId}/disable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/locations/${created_location_id}/disable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /locations/{locationId}/enable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/locations/${created_location_id}/enable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Location Created" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get('created_location_id') != null &amp;&amp; vars.get('created_location_id') != 'MISSING_LOCATION_ID',)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Inventory Endpoints" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /inventories" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="page" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">page</stringProp><stringProp name="Argument.value">${page}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/inventories</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /inventories" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Inventory ${run_id}&quot;,&quot;code&quot;:&quot;PERF-${run_id}&quot;,&quot;description&quot;:&quot;Inventory created by JMeter&quot;,&quot;companyId&quot;:&quot;${created_company_id}&quot;,&quot;locationId&quot;:&quot;${created_location_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/inventories</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Inventory Id" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">created_inventory_id</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_INVENTORY_ID</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /inventories/{inventoryId}" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Inventory Updated ${run_id}&quot;,&quot;code&quot;:&quot;PERF-UPD-${run_id}&quot;,&quot;description&quot;:&quot;Inventory updated by JMeter&quot;,&quot;companyId&quot;:&quot;${created_company_id}&quot;,&quot;locationId&quot;:&quot;${created_location_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/inventories/${created_inventory_id}</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /inventories/{inventoryId}/disable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/inventories/${created_inventory_id}/disable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /inventories/{inventoryId}/enable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/inventories/${created_inventory_id}/enable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Inventory Created" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get('created_inventory_id') != null &amp;&amp; vars.get('created_inventory_id') != 'MISSING_INVENTORY_ID',)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Item Endpoints" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /items" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="inventoryId" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">inventoryId</stringProp><stringProp name="Argument.value">${created_inventory_id}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+                <elementProp name="page" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">page</stringProp><stringProp name="Argument.value">${page}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/items</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /items" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Item ${run_id}&quot;,&quot;sku&quot;:&quot;SKU-${run_id}&quot;,&quot;category&quot;:&quot;Testing&quot;,&quot;brand&quot;:&quot;OpenAI&quot;,&quot;manufacturer&quot;:&quot;OpenAI&quot;,&quot;model&quot;:&quot;Smoke&quot;,&quot;partNumber&quot;:&quot;PN-${run_id}&quot;,&quot;serialNumber&quot;:&quot;SN-${run_id}&quot;,&quot;color&quot;:&quot;Black&quot;,&quot;dimensions&quot;:&quot;10x10&quot;,&quot;weight&quot;:&quot;1kg&quot;,&quot;unit&quot;:&quot;pcs&quot;,&quot;quantity&quot;:3,&quot;description&quot;:&quot;JMeter item&quot;,&quot;notes&quot;:&quot;Created by smoke suite&quot;,&quot;inventoryId&quot;:&quot;${created_inventory_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/items</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Item Id" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">created_item_id</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_ITEM_ID</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /items/{itemId}" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;name&quot;:&quot;Perf Item Updated ${run_id}&quot;,&quot;sku&quot;:&quot;SKU-UPD-${run_id}&quot;,&quot;category&quot;:&quot;Testing&quot;,&quot;brand&quot;:&quot;OpenAI&quot;,&quot;manufacturer&quot;:&quot;OpenAI&quot;,&quot;model&quot;:&quot;Smoke Updated&quot;,&quot;partNumber&quot;:&quot;PN-UPD-${run_id}&quot;,&quot;serialNumber&quot;:&quot;SN-UPD-${run_id}&quot;,&quot;color&quot;:&quot;Silver&quot;,&quot;dimensions&quot;:&quot;11x11&quot;,&quot;weight&quot;:&quot;2kg&quot;,&quot;unit&quot;:&quot;pcs&quot;,&quot;quantity&quot;:5,&quot;description&quot;:&quot;Updated JMeter item&quot;,&quot;notes&quot;:&quot;Updated by smoke suite&quot;,&quot;inventoryId&quot;:&quot;${created_inventory_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/items/${created_item_id}</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DELETE /items" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="itemIds" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">itemIds</stringProp><stringProp name="Argument.value">${created_item_id}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/items</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="User Endpoints" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /users" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="page" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">page</stringProp><stringProp name="Argument.value">${page}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/users</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /users" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;firstName&quot;:&quot;Perf&quot;,&quot;lastName&quot;:&quot;User&quot;,&quot;username&quot;:&quot;perf-user-${run_id}&quot;,&quot;email&quot;:&quot;perf-user-${run_id}@example.test&quot;,&quot;password&quot;:&quot;secret123&quot;,&quot;userRole&quot;:&quot;COMPANY_USER&quot;,&quot;companyId&quot;:&quot;${created_company_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/users</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract User Id" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">created_user_id</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_USER_ID</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /users/{userId}" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;firstName&quot;:&quot;Perf Updated&quot;,&quot;lastName&quot;:&quot;User&quot;,&quot;username&quot;:&quot;perf-user-updated-${run_id}&quot;,&quot;email&quot;:&quot;perf-user-updated-${run_id}@example.test&quot;,&quot;userRole&quot;:&quot;COMPANY_ADMIN&quot;,&quot;companyId&quot;:&quot;${created_company_id}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/users/${created_user_id}</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /users/{userId}/disable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/users/${created_user_id}/disable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PATCH /users/{userId}/enable" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/users/${created_user_id}/enable</stringProp>
+            <stringProp name="HTTPSampler.method">PATCH</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Dashboard And Analytics" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /dashboard" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="companyId" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">companyId</stringProp><stringProp name="Argument.value">${created_company_id}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/dashboard</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /analytics" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="companyId" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.name">companyId</stringProp><stringProp name="Argument.value">${created_company_id}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/analytics</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Company Admin Profile And API Key Flow" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth JSON Headers" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="Authorization" elementType="Header">
+              <stringProp name="Header.name">Authorization</stringProp>
+              <stringProp name="Header.value">Bearer ${company_jwt}</stringProp>
+            </elementProp>
+            <elementProp name="Content-Type" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="Accept" elementType="Header">
+              <stringProp name="Header.name">Accept</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /auth/login company admin" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;username&quot;:&quot;${company_admin_username}&quot;,&quot;password&quot;:&quot;${company_admin_password}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/auth/login</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Company JWT" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">company_jwt</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.token</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">MISSING_COMPANY_TOKEN</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Company Admin Login Succeeded" enabled="true">
+          <stringProp name="IfController.condition">${__groovy(vars.get('company_jwt') != null &amp;&amp; vars.get('company_jwt') != 'MISSING_COMPANY_TOKEN',)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /users/profile" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/users/profile</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /api-keys/company" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_path}/api-keys/company</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /api-keys/company" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;apiKey&quot;:&quot;${company_api_key_updated}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.path">${base_path}/api-keys/company</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

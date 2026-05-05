@@ -38,11 +38,11 @@ export class SettingsComponent {
 
         effect(() => {
             const profile = this.profile();
-            const shouldShowApiKey = profile?.userRole === UserRole.COMPANY_ADMIN;
+            const shouldShowApiKey = profile?.userRole === UserRole.COMPANY_ADMIN || profile?.userRole === UserRole.PLATFORM_ADMIN;
             this.showApiKey.set(shouldShowApiKey);
 
             if (shouldShowApiKey && !this.companyApiKey()) {
-                this.loadCompanyApiKey();
+                this.loadCurrentApiKey();
             }
         });
     }
@@ -76,8 +76,8 @@ export class SettingsComponent {
         });
     }
 
-    private loadCompanyApiKey(): void {
-        this.userService.getCompanyApiKey().subscribe({
+    private loadCurrentApiKey(): void {
+        this.userService.getCurrentApiKey().subscribe({
             next: (companyApiKey) => {
                 this.companyApiKey.set(companyApiKey);
             },

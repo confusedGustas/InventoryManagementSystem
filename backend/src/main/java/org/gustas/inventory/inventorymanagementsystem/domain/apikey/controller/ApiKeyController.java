@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api-keys")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('COMPANY_ADMIN')")
+@PreAuthorize("hasAnyRole('PLATFORM_ADMIN', 'COMPANY_ADMIN')")
 public class ApiKeyController {
 
     private final ApiKeyService apiKeyService;
 
-    @GetMapping("/company")
-    public ApiKeyDto getCompanyApiKey(Authentication authentication) {
-        return apiKeyService.getCompanyApiKey(authentication.getName());
+    @GetMapping("/current")
+    public ApiKeyDto getCurrentApiKey(Authentication authentication) {
+        return apiKeyService.getCurrentApiKey(authentication.getName());
     }
 
-    @PutMapping("/company")
-    public ApiKeyDto saveCompanyApiKey(Authentication authentication, @Valid @RequestBody SaveApiKeyDto saveApiKeyDto) {
-        return apiKeyService.saveCompanyApiKey(authentication.getName(), saveApiKeyDto);
+    @PutMapping("/current")
+    public ApiKeyDto saveCurrentApiKey(Authentication authentication, @Valid @RequestBody SaveApiKeyDto saveApiKeyDto) {
+        return apiKeyService.saveCurrentApiKey(authentication.getName(), saveApiKeyDto);
     }
 
 }

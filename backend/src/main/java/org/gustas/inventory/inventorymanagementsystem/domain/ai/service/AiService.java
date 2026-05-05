@@ -216,20 +216,19 @@ public class AiService {
     }
 
     private String resolveAnalysisApiKey(User currentUser, Company selectedCompany) {
+        if (authUtils.isPlatformAdmin(currentUser)) {
+            ApiKey apiKey = apiKeyRepository.findByUserId(currentUser.getId());
+            if (apiKey == null || apiKey.getApiKey() == null || apiKey.getApiKey().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "No API key has been configured for this admin account");
+            }
+
+            return apiKey.getApiKey();
+        }
+
         if (!authUtils.isPlatformAdmin(currentUser)) {
             return getRequiredApiKey(currentUser.getCompany());
         }
-
-        if (selectedCompany != null) {
-            return getRequiredApiKey(selectedCompany);
-        }
-
-        ApiKey anyAvailableApiKey = apiKeyRepository.findAll().stream()
-                .filter(apiKey -> apiKey.getApiKey() != null && !apiKey.getApiKey().isBlank())
-                .max(Comparator.comparing(ApiKey::getUpdatedOn, Comparator.nullsLast(Comparator.naturalOrder())))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "No company API key has been configured yet"));
-
-        return anyAvailableApiKey.getApiKey();
+        return getRequiredApiKey(selectedCompany);
     }
 
     private String getRequiredApiKey(Company company) {

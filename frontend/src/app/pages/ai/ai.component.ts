@@ -1,4 +1,5 @@
 import {Component, computed, inject, signal} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
 import {AuthUtils} from '../../auth/auth.utils';
 import {UserRole} from '../../shared/enums';
 import {ToastService} from '../../shared/toast/toast.service';
@@ -72,8 +73,11 @@ export class AiComponent {
                 this.loadReports();
                 this.loading.set(false);
             },
-            error: () => {
-                this.toast.error('Unable to generate AI analysis. Make sure the company API key is configured.');
+            error: (error: HttpErrorResponse) => {
+                this.toast.error(this.extractErrorMessage(
+                    error,
+                    'Unable to generate AI analysis. Make sure your AI API key is configured.'
+                ));
                 this.loading.set(false);
             },
         });
@@ -87,8 +91,11 @@ export class AiComponent {
                 this.itemSuggestion.set(suggestion);
                 this.itemSuggestionLoading.set(false);
             },
-            error: () => {
-                this.toast.error('Unable to analyze the image and suggest an item.');
+            error: (error: HttpErrorResponse) => {
+                this.toast.error(this.extractErrorMessage(
+                    error,
+                    'Unable to analyze the image and suggest an item.'
+                ));
                 this.itemSuggestionLoading.set(false);
             }
         });
@@ -104,8 +111,8 @@ export class AiComponent {
                 this.scope.set(scope);
                 this.selectedCompanyId.set(scope.selectedCompany?.id ?? null);
             },
-            error: () => {
-                this.toast.error('Unable to load AI scope.');
+            error: (error: HttpErrorResponse) => {
+                this.toast.error(this.extractErrorMessage(error, 'Unable to load AI scope.'));
             },
         });
     }
@@ -115,8 +122,8 @@ export class AiComponent {
             next: (reports) => {
                 this.reports.set(reports);
             },
-            error: () => {
-                this.toast.error('Unable to load AI reports.');
+            error: (error: HttpErrorResponse) => {
+                this.toast.error(this.extractErrorMessage(error, 'Unable to load AI reports.'));
             },
         });
     }
@@ -131,10 +138,22 @@ export class AiComponent {
                 anchor.click();
                 URL.revokeObjectURL(url);
             },
-            error: () => {
-                this.toast.error('Unable to download AI report PDF.');
+            error: (error: HttpErrorResponse) => {
+                this.toast.error(this.extractErrorMessage(error, 'Unable to download AI report PDF.'));
             }
         });
+    }
+
+    private extractErrorMessage(error: HttpErrorResponse, fallbackMessage: string): string {
+        if (typeof error.error === 'string' && error.error.trim()) {
+            return error.error;
+        }
+
+        if (error.error && typeof error.error.message === 'string' && error.error.message.trim()) {
+            return error.error.message;
+        }
+
+        return fallbackMessage;
     }
 
 }

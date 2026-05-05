@@ -8,6 +8,8 @@ import {Component, input, output} from '@angular/core';
 export class InventoryHeaderComponent {
 
     readonly canManageInventories = input.required<boolean>();
+    readonly canManageItems = input.required<boolean>();
+    readonly hasSelectedInventory = input.required<boolean>();
     readonly showInventoryForm = input.required<boolean>();
     readonly showItemForm = input.required<boolean>();
 

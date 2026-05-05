@@ -17,6 +17,7 @@ export class ItemTableCardComponent {
     readonly canManageItems = input.required<boolean>();
 
     readonly inventorySelectionCleared = output<void>();
+    readonly newItemRequested = output<void>();
     readonly itemsDeleted = output<void>();
     readonly selectAllToggled = output<boolean>();
     readonly itemSelectionToggled = output<{ itemId: string; checked: boolean }>();

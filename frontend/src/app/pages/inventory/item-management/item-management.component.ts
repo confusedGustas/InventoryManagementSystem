@@ -1,3 +1,4 @@
+import {DOCUMENT} from '@angular/common';
 import {Component, effect, inject, input, output, signal} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AuthUtils} from '../../../auth/auth.utils';
@@ -18,6 +19,7 @@ export class ItemManagementComponent {
     private readonly inventoryService = inject(InventoryService);
     private readonly formBuilder = inject(FormBuilder);
     private readonly toast = inject(ToastService);
+    private readonly document = inject(DOCUMENT);
 
     readonly selectedInventory = input.required<InventoryDto | null>();
     readonly showForm = input.required<boolean>();
@@ -33,7 +35,8 @@ export class ItemManagementComponent {
 
     protected readonly isPlatformAdmin = AuthUtils.hasRole(UserRole.PLATFORM_ADMIN);
     protected readonly isCompanyAdmin = AuthUtils.hasRole(UserRole.COMPANY_ADMIN);
-    protected readonly canManageItems = this.isPlatformAdmin || this.isCompanyAdmin;
+    protected readonly isCompanyUser = AuthUtils.hasRole(UserRole.COMPANY_USER);
+    protected readonly canManageItems = this.isPlatformAdmin || this.isCompanyAdmin || this.isCompanyUser;
 
     protected readonly itemForm = this.formBuilder.nonNullable.group({
         name: ['', Validators.required],
@@ -74,6 +77,19 @@ export class ItemManagementComponent {
 
             this.loadItems();
         });
+
+        effect(() => {
+            if (!this.showForm()) {
+                return;
+            }
+
+            queueMicrotask(() => {
+                this.document.getElementById('item-form-card')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+            });
+        });
     }
 
     protected goToPage(page: number): void {
@@ -86,6 +102,11 @@ export class ItemManagementComponent {
     }
 
     protected submitItem(): void {
+        if (!this.canManageItems) {
+            this.toast.error('You do not have permission to manage items.');
+            return;
+        }
+
         const inventoryId = this.selectedInventory()?.id;
         if (!inventoryId) {
             this.toast.error('Select an inventory before saving items.');
@@ -145,6 +166,21 @@ export class ItemManagementComponent {
         this.showFormChange.emit(true);
     }
 
+    protected openCreateForm(): void {
+        if (!this.canManageItems) {
+            this.toast.error('You do not have permission to create items.');
+            return;
+        }
+
+        if (!this.selectedInventory()) {
+            this.toast.error('Select an inventory before creating an item.');
+            return;
+        }
+
+        this.resetForm(false);
+        this.showFormChange.emit(true);
+    }
+
     protected toggleItemSelection(itemId: string, checked: boolean): void {
         if (checked) {
             this.selectedItemIds.update(itemIds => itemIds.includes(itemId) ? itemIds : [...itemIds, itemId]);
@@ -159,6 +195,11 @@ export class ItemManagementComponent {
     }
 
     protected deleteSelectedItems(): void {
+        if (!this.canManageItems) {
+            this.toast.error('You do not have permission to delete items.');
+            return;
+        }
+
         const itemIds = this.selectedItemIds();
         if (itemIds.length === 0) {
             this.toast.error('Select at least one item to delete.');

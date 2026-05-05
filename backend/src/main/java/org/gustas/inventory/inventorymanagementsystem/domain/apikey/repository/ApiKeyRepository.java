@@ -8,5 +8,6 @@ import java.util.UUID;
 public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
 
     ApiKey findByCompanyId(UUID companyId);
+    ApiKey findByUserId(UUID userId);
 
 }

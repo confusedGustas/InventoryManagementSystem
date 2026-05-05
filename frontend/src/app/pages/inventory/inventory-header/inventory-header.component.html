@@ -10,9 +10,11 @@
                     {{ showInventoryForm() ? 'Close Inventory Form' : 'New Inventory' }}
                 </button>
             }
-            <button type="button" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="itemFormToggled.emit()">
-                {{ showItemForm() ? 'Close Item Form' : 'New Item' }}
-            </button>
+            @if (canManageItems()) {
+                <button type="button" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900" (click)="itemFormToggled.emit()">
+                    {{ showItemForm() ? 'Close Item Form' : (hasSelectedInventory() ? 'New Item' : 'Select Inventory First') }}
+                </button>
+            }
         </div>
     </div>
 </div>

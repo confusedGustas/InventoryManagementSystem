@@ -16,6 +16,9 @@
                     Clear Inventory Selection
                 </button>
                 @if (canManageItems()) {
+                    <button type="button" class="rounded-lg bg-indigo-700 px-3 py-2 text-sm font-medium text-white transition hover:bg-indigo-600" (click)="newItemRequested.emit()">
+                        New Item
+                    </button>
                     <button type="button" class="rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-700 transition hover:border-rose-300 hover:text-rose-800" (click)="itemsDeleted.emit()">
                         Delete Selected
                     </button>

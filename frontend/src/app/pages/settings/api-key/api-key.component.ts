@@ -38,7 +38,7 @@ export class ApiKeyComponent {
             return;
         }
 
-        this.settingsService.saveCompanyApiKey(this.form.getRawValue()).subscribe({
+        this.settingsService.saveCurrentApiKey(this.form.getRawValue()).subscribe({
             next: (savedApiKey) => {
                 this.form.patchValue({ apiKey: savedApiKey.apiKey }, { emitEvent: false });
                 this.apiKeySaved.emit(savedApiKey);

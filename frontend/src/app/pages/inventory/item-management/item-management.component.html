@@ -1,5 +1,5 @@
 @if (showForm()) {
-    <app-item-form-card class="block mb-6"
+    <app-item-form-card id="item-form-card" class="block mb-6"
         [editingItemId]="editingItemId()"
         [itemForm]="itemForm"
         [selectedInventory]="selectedInventory()"
@@ -14,6 +14,7 @@
     [pagination]="pagination()"
     [canManageItems]="canManageItems"
     (inventorySelectionCleared)="selectedInventoryCleared.emit()"
+    (newItemRequested)="openCreateForm()"
     (itemsDeleted)="deleteSelectedItems()"
     (selectAllToggled)="toggleSelectAllItems($event)"
     (itemSelectionToggled)="toggleItemSelection($event.itemId, $event.checked)"

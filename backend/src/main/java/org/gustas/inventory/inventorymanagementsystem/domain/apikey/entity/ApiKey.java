@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gustas.inventory.inventorymanagementsystem.domain.company.entity.Company;
+import org.gustas.inventory.inventorymanagementsystem.domain.user.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -37,8 +38,12 @@ public class ApiKey {
     private LocalDateTime updatedOn;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false, unique = true)
+    @JoinColumn(name = "company_id", unique = true)
     private Company company;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 
     @PrePersist
     @PreUpdate

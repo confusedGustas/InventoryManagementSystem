@@ -28,8 +28,23 @@ public class ApiKeyService {
     private final ApiKeyMapper apiKeyMapper;
 
     @Transactional(readOnly = true)
-    public ApiKeyDto getCompanyApiKey(String username) {
+    public ApiKeyDto getCurrentApiKey(String username) {
         User currentUser = currentUserContext.getCurrentUser(username);
+        if (authUtils.isPlatformAdmin(currentUser)) {
+            ApiKey apiKey = apiKeyRepository.findByUserId(currentUser.getId());
+            if (apiKey == null) {
+                return ApiKeyDto.builder()
+                        .id(null)
+                        .companyId(null)
+                        .companyName(null)
+                        .apiKey("")
+                        .updatedOn(null)
+                        .build();
+            }
+
+            return apiKeyMapper.toDto(apiKey);
+        }
+
         checkCompanyAdmin(currentUser);
         Company company = currentUser.getCompany();
         companyIntegrity.checkCompanyNotNull(company);
@@ -49,27 +64,35 @@ public class ApiKeyService {
     }
 
     @Transactional
-    public ApiKeyDto saveCompanyApiKey(String username, SaveApiKeyDto saveApiKeyDto) {
+    public ApiKeyDto saveCurrentApiKey(String username, SaveApiKeyDto saveApiKeyDto) {
         User currentUser = currentUserContext.getCurrentUser(username);
+        String apiKeyValue = saveApiKeyDto.getApiKey().trim();
+        if (authUtils.isPlatformAdmin(currentUser)) {
+            ApiKey apiKey = apiKeyRepository.findByUserId(currentUser.getId());
+            if (apiKey == null) {
+                apiKey = apiKeyMapper.toEntity(apiKeyValue, currentUser);
+            } else {
+                apiKeyMapper.update(apiKey, apiKeyValue);
+            }
+
+            return apiKeyMapper.toDto(apiKeyRepository.save(apiKey));
+        }
+
         checkCompanyAdmin(currentUser);
         Company company = currentUser.getCompany();
         companyIntegrity.checkCompanyNotNull(company);
-
-        String apiKeyValue = saveApiKeyDto.getApiKey().trim();
         ApiKey apiKey = apiKeyRepository.findByCompanyId(company.getId());
-
         if (apiKey == null) {
             apiKey = apiKeyMapper.toEntity(apiKeyValue, company);
         } else {
             apiKeyMapper.update(apiKey, apiKeyValue);
         }
-
         return apiKeyMapper.toDto(apiKeyRepository.save(apiKey));
     }
 
     private void checkCompanyAdmin(User currentUser) {
         if (!authUtils.isCompanyAdmin(currentUser)) {
-            throw new ResponseStatusException(FORBIDDEN, "Only company admins can manage company API keys");
+            throw new ResponseStatusException(FORBIDDEN, "Only company admins and platform admins can manage AI API keys");
         }
     }
 

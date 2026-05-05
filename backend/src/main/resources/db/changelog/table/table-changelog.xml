@@ -128,4 +128,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20260505-api-key-user-support" author="Codex">
+        <sql>
+            ALTER TABLE api_key ALTER COLUMN company_id DROP NOT NULL;
+            ALTER TABLE api_key ADD COLUMN IF NOT EXISTS user_id UUID UNIQUE REFERENCES users(id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

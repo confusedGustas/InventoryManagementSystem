@@ -24,8 +24,12 @@ export class InventoryComponent {
     protected readonly selectedInventory = signal<InventoryDto | null>(null);
     protected readonly showInventoryForm = signal(false);
     protected readonly showItemForm = signal(false);
+    private readonly pendingItemFormOpen = signal(false);
     protected readonly canManageInventories = AuthUtils.hasRole(UserRole.PLATFORM_ADMIN)
         || AuthUtils.hasRole(UserRole.COMPANY_ADMIN);
+    protected readonly canManageItems = AuthUtils.hasRole(UserRole.PLATFORM_ADMIN)
+        || AuthUtils.hasRole(UserRole.COMPANY_ADMIN)
+        || AuthUtils.hasRole(UserRole.COMPANY_USER);
     protected readonly selectedInventoryId = computed(() => this.selectedInventory()?.id ?? null);
 
     protected toggleInventoryForm(): void {
@@ -33,11 +37,18 @@ export class InventoryComponent {
     }
 
     protected toggleItemForm(): void {
-        if (!this.selectedInventory()) {
-            this.toast.error('Select an inventory before creating items.');
+        if (!this.canManageItems) {
+            this.toast.error('You do not have permission to create items.');
             return;
         }
 
+        if (!this.selectedInventory()) {
+            this.pendingItemFormOpen.set(true);
+            this.toast.error('Select an inventory first. The item form will open automatically once you choose one.');
+            return;
+        }
+
+        this.pendingItemFormOpen.set(false);
         this.showItemForm.update(current => !current);
     }
 
@@ -45,6 +56,12 @@ export class InventoryComponent {
         this.selectedInventory.set(inventory);
         if (!inventory) {
             this.showItemForm.set(false);
+            return;
+        }
+
+        if (this.pendingItemFormOpen() && this.canManageItems) {
+            this.showItemForm.set(true);
+            this.pendingItemFormOpen.set(false);
         }
     }
 

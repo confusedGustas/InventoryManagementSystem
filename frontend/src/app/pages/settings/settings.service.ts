@@ -67,8 +67,8 @@ export class SettingsService {
         return this.http.get<UserDto>(`${this.apiUrl}/users/profile`);
     }
 
-    getCompanyApiKey() {
-        return this.http.get<ApiKeyDto>(`${this.apiUrl}/api-keys/company`);
+    getCurrentApiKey() {
+        return this.http.get<ApiKeyDto>(`${this.apiUrl}/api-keys/current`);
     }
 
     getUsers(page = 1) {
@@ -84,8 +84,8 @@ export class SettingsService {
         return this.http.patch<UserDto>(`${this.apiUrl}/users/change-password`, payload);
     }
 
-    saveCompanyApiKey(payload: SaveApiKeyDto) {
-        return this.http.put<ApiKeyDto>(`${this.apiUrl}/api-keys/company`, payload);
+    saveCurrentApiKey(payload: SaveApiKeyDto) {
+        return this.http.put<ApiKeyDto>(`${this.apiUrl}/api-keys/current`, payload);
     }
 
     createUser(payload: CreateUserDto) {

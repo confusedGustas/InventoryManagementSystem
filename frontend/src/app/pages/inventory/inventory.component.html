@@ -1,6 +1,8 @@
 <section class="mx-auto space-y-6">
     <app-inventory-header class="block mb-6"
         [canManageInventories]="canManageInventories"
+        [canManageItems]="canManageItems"
+        [hasSelectedInventory]="!!selectedInventory()"
         [showInventoryForm]="showInventoryForm()"
         [showItemForm]="showItemForm()"
         (inventoryFormToggled)="toggleInventoryForm()"
