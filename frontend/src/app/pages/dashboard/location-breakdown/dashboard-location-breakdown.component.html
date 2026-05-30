@@ -15,7 +15,7 @@
             </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
-                @for (location of locations(); track location.locationId) {
+                @for (location of pagedLocations(); track location.locationId) {
                     <tr>
                         <td class="px-4 py-4 font-medium text-slate-900">{{ location.locationName }}</td>
                         <td class="px-4 py-4">{{ location.companyName }}</td>
@@ -28,4 +28,6 @@
             </tbody>
         </table>
     </div>
+
+    <app-list-pagination [page]="page()" [totalPages]="totalPages()" (pageChanged)="goToPage($event)" />
 </article>

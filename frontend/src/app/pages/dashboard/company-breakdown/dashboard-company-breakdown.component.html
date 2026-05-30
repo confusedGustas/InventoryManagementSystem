@@ -15,7 +15,7 @@
             </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
-                @for (company of companies(); track company.companyId) {
+                @for (company of pagedCompanies(); track company.companyId) {
                     <tr>
                         <td class="px-4 py-4 font-medium text-slate-900">{{ company.companyName }}</td>
                         <td class="px-4 py-4">{{ formatEnumLabel(company.status) }}</td>
@@ -28,4 +28,6 @@
             </tbody>
         </table>
     </div>
+
+    <app-list-pagination [page]="page()" [totalPages]="totalPages()" (pageChanged)="goToPage($event)" />
 </article>

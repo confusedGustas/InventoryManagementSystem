@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @for (entry of activity(); track entry.period) {
+                @for (entry of pagedActivity(); track entry.period) {
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="px-4 py-3 font-medium text-slate-900">{{ entry.period }}</td>
                         <td class="px-4 py-3">{{ entry.itemsAdded }}</td>
@@ -24,4 +24,6 @@
             </tbody>
         </table>
     </div>
+
+    <app-list-pagination [page]="page()" [totalPages]="totalPages()" (pageChanged)="goToPage($event)" />
 </section>

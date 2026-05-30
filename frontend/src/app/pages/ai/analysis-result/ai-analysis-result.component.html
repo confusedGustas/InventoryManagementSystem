@@ -26,7 +26,7 @@
             <article class="rounded-lg border border-slate-200 p-4">
                 <div class="text-sm font-semibold text-slate-900">Depletion Risks</div>
                 <div class="mt-3 space-y-3">
-                    @for (item of currentAnalysis.depletionRisks; track item.itemName + item.inventoryName) {
+                    @for (item of pagedDepletionRisks(); track item.itemName + item.inventoryName) {
                         <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
                             <div class="text-sm font-medium text-slate-900">{{ item.itemName }}</div>
                             <div class="mt-1 text-xs text-slate-500">{{ item.companyName }} · {{ item.inventoryName }} · {{ item.locationName }}</div>
@@ -37,12 +37,13 @@
                         <div class="text-sm text-slate-500">No immediate depletion risks were highlighted.</div>
                     }
                 </div>
+                <app-list-pagination [page]="depletionPage()" [totalPages]="depletionTotalPages()" (pageChanged)="goToDepletionPage($event)" />
             </article>
 
             <article class="rounded-lg border border-slate-200 p-4">
                 <div class="text-sm font-semibold text-slate-900">Oversupply Risks</div>
                 <div class="mt-3 space-y-3">
-                    @for (item of currentAnalysis.oversupplyRisks; track item.itemName + item.inventoryName) {
+                    @for (item of pagedOversupplyRisks(); track item.itemName + item.inventoryName) {
                         <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
                             <div class="text-sm font-medium text-slate-900">{{ item.itemName }}</div>
                             <div class="mt-1 text-xs text-slate-500">{{ item.companyName }} · {{ item.inventoryName }} · {{ item.locationName }}</div>
@@ -53,12 +54,13 @@
                         <div class="text-sm text-slate-500">No oversupply risks were highlighted.</div>
                     }
                 </div>
+                <app-list-pagination [page]="oversupplyPage()" [totalPages]="oversupplyTotalPages()" (pageChanged)="goToOversupplyPage($event)" />
             </article>
 
             <article class="rounded-lg border border-slate-200 p-4">
                 <div class="text-sm font-semibold text-slate-900">Suggested Purchases</div>
                 <div class="mt-3 space-y-3">
-                    @for (item of currentAnalysis.suggestedPurchases; track item.itemName + item.inventoryName) {
+                    @for (item of pagedSuggestedPurchases(); track item.itemName + item.inventoryName) {
                         <div class="rounded-lg border border-slate-100 bg-slate-50 p-3">
                             <div class="text-sm font-medium text-slate-900">{{ item.itemName }}</div>
                             <div class="mt-1 text-xs text-slate-500">{{ item.companyName }} · {{ item.inventoryName }} · {{ item.locationName }}</div>
@@ -69,18 +71,20 @@
                         <div class="text-sm text-slate-500">No purchase suggestions were highlighted.</div>
                     }
                 </div>
+                <app-list-pagination [page]="purchasesPage()" [totalPages]="purchasesTotalPages()" (pageChanged)="goToPurchasesPage($event)" />
             </article>
         </div>
 
         <div class="mt-5 rounded-lg border border-slate-200 p-4">
             <div class="text-sm font-semibold text-slate-900">Recommended Actions</div>
             <ul class="mt-3 space-y-2 text-sm text-slate-600">
-                @for (action of currentAnalysis.actions; track action) {
+                @for (action of pagedActions(); track action) {
                     <li>{{ action }}</li>
                 } @empty {
                     <li>No follow-up actions were returned.</li>
                 }
             </ul>
+            <app-list-pagination [page]="actionsPage()" [totalPages]="actionsTotalPages()" (pageChanged)="goToActionsPage($event)" />
         </div>
     </section>
 }

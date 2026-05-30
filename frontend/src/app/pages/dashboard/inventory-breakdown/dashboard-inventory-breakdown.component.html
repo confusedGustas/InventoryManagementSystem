@@ -15,7 +15,7 @@
             </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
-                @for (inventory of inventories(); track inventory.inventoryId) {
+                @for (inventory of pagedInventories(); track inventory.inventoryId) {
                     <tr>
                         <td class="px-4 py-4 font-medium text-slate-900">{{ inventory.inventoryName }}</td>
                         <td class="px-4 py-4">{{ inventory.companyName }}</td>
@@ -28,4 +28,6 @@
             </tbody>
         </table>
     </div>
+
+    <app-list-pagination [page]="page()" [totalPages]="totalPages()" (pageChanged)="goToPage($event)" />
 </article>
