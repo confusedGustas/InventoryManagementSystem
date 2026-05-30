@@ -104,4 +104,4 @@ AI analysis requires an OpenAI API key. You can add one through the Settings pag
 
 ## License
 
-MIT
+[MIT](LICENSE)
